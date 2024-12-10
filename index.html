@@ -46,60 +46,93 @@
             color: white;
             border: none;
             cursor: pointer;
+            margin-top: 20px;
         }
         button:hover {
             background-color: #4cae4c;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+        .loading {
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Opt-In for Personalized Shopping</h1>
-        <p>We’d like to enhance your shopping experience by providing personalized recommendations. To do so, we’d like to track some of your app usage data. Your information will be kept secure and used only to enhance your shopping journey.</p>
+        <p>We'd like to enhance your shopping experience by providing personalized recommendations. To do so, we'd like to track some of your app usage data. Your information will be kept secure and used only to enhance your shopping journey.</p>
         <form id="optInForm">
             <label for="firstName">First Name</label>
             <input type="text" id="firstName" name="firstName" required>
-
+            
             <label for="lastName">Last Name</label>
             <input type="text" id="lastName" name="lastName" required>
-
+            
             <label for="age">Age</label>
             <input type="number" id="age" name="age" min="18" required>
-
+            
             <label>Do you allow AIRA to track your app usage?</label>
             <select id="dataConsent" name="dataConsent" required>
+                <option value="">Please select...</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
             </select>
-
+            
+            <div id="statusMessage"></div>
             <button type="submit">Submit</button>
         </form>
     </div>
     <script>
-        document.getElementById('optInForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+        const form = document.getElementById('optInForm');
+        const statusMessage = document.getElementById('statusMessage');
 
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // Clear previous messages
+            statusMessage.className = 'loading';
+            statusMessage.textContent = 'Submitting...';
+            
             const formData = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                age: document.getElementById('age').value,
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                age: parseInt(document.getElementById('age').value),
                 dataConsent: document.getElementById('dataConsent').value
             };
-
+            
             try {
-                const response = await fetch('https://your-backend-server.com/api/opt-in', {
+                const response = await fetch('https://aira-opt-in-backend.onrender.com/api/opt-in', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(formData)
                 });
-
+                
+                const data = await response.json();
+                
                 if (response.ok) {
-                    alert('Thank you for opting in!');
+                    statusMessage.className = 'success';
+                    statusMessage.textContent = 'Thank you for submitting your preferences!';
+                    form.reset();
                 } else {
-                    alert('Something went wrong. Please try again.');
+                    statusMessage.className = 'error';
+                    statusMessage.textContent = data.message || 'Something went wrong. Please try again.';
                 }
             } catch (error) {
-                alert('Error connecting to the server.');
+                statusMessage.className = 'error';
+                statusMessage.textContent = 'Error connecting to the server. Please try again later.';
+                console.error('Error:', error);
             }
         });
     </script>
