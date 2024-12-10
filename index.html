@@ -64,10 +64,26 @@
             margin-top: 10px;
             text-align: center;
         }
+        .image-gallery {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .image-gallery img {
+            width: 22%; /* Adjust the width to fit four images in one row */
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="image-gallery">
+            <img src="images/1.jpeg" alt="App Prototype 1">
+            <img src="images/2.jpeg" alt="App Prototype 2">
+            <img src="images/3.jpeg" alt="App Prototype 3">
+            <img src="images/4.jpeg" alt="App Prototype 4">
+        </div>
         <h1>Opt-In for Personalized Shopping</h1>
         <p>We'd like to enhance your shopping experience by providing personalized recommendations. To do so, we'd like to track some of your app usage data. Your information will be kept secure and used only to enhance your shopping journey.</p>
         <form id="optInForm">
